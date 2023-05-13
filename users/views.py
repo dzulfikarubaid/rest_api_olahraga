@@ -10,17 +10,42 @@ def index(request):
 @api_view(['POST'])
 def Add(request):
     serializer = Serializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
-    serializer.save()
-    return Response({
-        'status':'data telah ditambahkan',
-        'id':serializer.data['id'],
-        'nama cabang':serializer.data['nama_cabang'],
-        'deskripsi':serializer.data['deskripsi'],
-        'sejarah':serializer.data['sejarah'],
-    })
+    if serializer.is_valid():
+        serializer.save()
+        return Response({
+            'status':'data telah ditambahkan',
+            'id':serializer.data['id'],
+            'nama cabang':serializer.data['nama_cabang'],
+            'deskripsi':serializer.data['deskripsi'],
+            'sejarah':serializer.data['sejarah'],
+        })
+    return Response(serializer.errors)
 @api_view(['GET'])
 def List(request):
     ModelObject=Model.objects.all()
     SerializerObject = Serializer(ModelObject,many=True)
     return Response(SerializerObject.data)
+@api_view(['PUT'])
+def Update(request, id):
+    try:
+        ModelObject = Model.objects.get(id=id)
+    except Model.DoesNotExist:
+        status = {'status':'data tidak ditemukan'}
+        return Response(status)
+    serializer = Serializer(ModelObject, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors)
+
+@api_view(['DELETE'])
+def Delete(request, id):
+    try:
+        ModelObject = Model.objects.get(id=id)
+    except Model.DoesNotExist:
+        status = {'status':'data tidak ditemukan'}
+        return Response(status)
+    ModelObject.delete()
+    return Response({
+        'status':'data telah dihapus'
+    })
