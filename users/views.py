@@ -6,7 +6,7 @@ from .models import Model
 
 # Create your views here.
 def index(request):
-    return redirect('list/')
+    return redirect('documentation/')
 @api_view(['POST'])
 def Add(request):
     serializer = Serializer(data=request.data)
