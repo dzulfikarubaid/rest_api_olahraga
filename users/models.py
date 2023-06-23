@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 class Model(models.Model):
     id = models.AutoField(primary_key=True)
-    nama_cabang = models.CharField(max_length=100)
+    nama_cabang = models.CharField(max_length=100, unique=True)
     deskripsi = models.TextField()
     sejarah = models.TextField()
 
